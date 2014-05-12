@@ -113,12 +113,21 @@ exports.submitTicket = function(req, res){
 	}
 };
 
-
+exports.support=function(req,res)
+{
+		if(req.query.clientId!=null && req.query.clientId!="")
+		{
+			console.log(req.session.clientId);
+			res.render('User',{clientId:req.query.clientId});
+		}
+		else
+			console.log("No ClientId specified");
+}
 
 
 exports.initialRequest = function(req, res){
 	console.log("handling initial request");
-	
+
 	if(!req.body.hasOwnProperty('clientId') || !req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('message')|| !req.body.hasOwnProperty('email')|| !req.body.hasOwnProperty('category')) 
 	{
 		console.log("all fields required!!");
@@ -146,8 +155,8 @@ exports.initialRequest = function(req, res){
 		res.render('conversation',{clientId:req.body.clientId,conv:result});
 
 		});
-		
-		
+
+
 
 
 
@@ -180,7 +189,7 @@ exports.knowledgeBase = function(req, res){
 		console.log("message : " + req.body.message);
 
 		res.statusCode=200;
-		
+
 		res.send("0, Query matched Information from Knowledge Base.");
 
 	}
@@ -213,7 +222,7 @@ exports.custPollReq = function(req, res){
 		console.log("clientId : " + req.body.clientId);
 		console.log("conversationID : " + req.body.conversationId);
 		console.log("timeStamp : " + req.body.lastReq);
-		
+
 		//sayHello();
 		conversation.getConversationsGreaterThanT1(function(err,result){
 			console.log("inside get conversation t1");
@@ -227,20 +236,10 @@ exports.custPollReq = function(req, res){
 
 				}
 		},json);
-		
+
 	}
 
 //	/*ajax request to search in knowledge base*/
 
 };
-
-function sayHello()
-{
-	console.log("Hello Poll");
-}
-
-
-
-
-
 
