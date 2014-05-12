@@ -1,0 +1,316 @@
+<html>
+<head>
+<script>
+
+var clientId;
+var supportStatus="offline";
+window.onload =function()
+{
+clientId="<%=clientId%>";
+alert(clientId);
+var params = "clientId="+clientId;
+callCloudAjax("http://localhost:3000/categories",params,processRequest);
+}
+
+function chatorTicket(status)
+{
+	document.getElementById('clientId').value=clientId;
+	if(status=="online")
+	{
+		supportStatus=status;
+		document.getElementById('ticket').style.visibility="hidden";
+		document.getElementById('chat').style.visibility="visible";
+	}
+	else if(status=="offline")
+	{
+		supportStatus=status;
+		document.getElementById('ticket').style.visibility="visible";
+		document.getElementById('chat').style.visibility="hidden";
+	}
+}
+
+function startChat()
+{
+	alert("make ajax request to query DB");
+	var params="clientId="+clientId+"&message="+document.getElementById('message').value+"&category="+document.getElementById('category').value;
+	callCloudAjaxSync("http://localhost:3000/knowledgeBase",params,processKbResponse);
+	document.getElementById('sc').style.visibility="visible";
+	document.getElementById('chat').style.visibility="hidden";
+	
+	document.getElementById("userDetails").action="http://localhost:3000/initialRequest";
+}
+
+
+
+
+function initRequest() 
+{
+	if (window.XMLHttpRequest) 
+	{
+		return new XMLHttpRequest();
+	} 
+	else 
+	{
+		if (window.ActiveXObject) 
+		{
+			isIE = true;
+			return new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+
+}
+
+function callCloudAjax(url, params, process) 
+{
+	if(process!=null)
+	{
+		
+		req = initRequest();
+		req.onreadystatechange = process;
+		req.open("POST",url,true);
+		req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		req.send(params);
+	}
+}
+
+function callCloudAjaxSync(url, params, process) 
+{
+	if(process!= null)
+	{
+		
+		req = initRequest();
+		req.onreadystatechange = process;
+		req.open("POST",url,false);
+		req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		req.send(params);
+	}
+}
+
+function processRequest() 
+{
+	if (req.readyState == 4) 
+	{
+		if (req.status == 200) 
+		{
+			results = req.responseText;
+			if (results != null) 
+			{
+				var results_array = results.split(",");
+				var value = trim(results);
+				if ((value != "") && (value.length != 0)) 
+				{
+					if (results_array[0] == "1") 
+					{
+						alert(results_array[1]);
+					}
+					else
+					{
+						alert("Support Status: " + results_array[2]);
+						chatorTicket(results_array[2])
+						var catoptions = results_array[1].split(":");
+						var catdrop = document.getElementById("category");
+						for(var i=0;i<catoptions.length;i++)
+						{
+							var cate=catoptions[i];
+							var elem = document.createElement("option");
+							elem.text = cate;
+							elem.value= cate;
+							try 
+							{
+                				catdrop.add(elem,null);
+           					}
+           					catch(ex) 
+           					{
+               					 catdrop.add(elem);
+            				}
+						}
+					} 
+				}
+			}
+		} 
+		else 
+		{	
+       		alert("Problems communicating with Cloud server");
+       		return false;
+		}
+	}
+} 
+
+function processKbResponse() 
+{
+	if (req.readyState == 4) 
+	{
+		if (req.status == 200) 
+		{
+			results = req.responseText;
+			if (results != null) 
+			{
+				var results_array = results.split(",");
+				var value = trim(results);
+				if ((value != "") && (value.length != 0)) 
+				{
+					if (results_array[0] == "1") 
+					{
+						alert("Please Confirm and Click on Start Chat to initiate a conversation");
+					}
+					else
+					{
+						alert("We found some information that might relate to your query. \n\n " + results_array[1] + "\n\n Click on Start Chat if you still wish to talk to Support");
+					} 
+				}
+			}
+		} 
+		else 
+		{	
+       		alert("Problems communicating with Cloud server");
+       		return false;
+		}
+	}
+} 
+function closeWindow()
+{
+	window.close();
+}
+
+
+function openWin()
+{
+var myWindow = window.open('chat.html','','toolbar=no,width=500,height=500,location=0'); 
+}
+
+$(function() {
+    $('.required-icon').tooltip({
+        placement: 'left',
+        title: 'Required field'
+        });
+});
+function trim(x) {
+    return x.replace(/^\s+|\s+$/gm,'');
+}
+
+</script>
+
+<style type="text/css">
+.basic-grey {
+    width: 400px;
+    margin-left: 1cm;
+	margin-top: 1cm;
+    background: #00000;
+    padding: 20px 30px 20px 30px;
+    font: 12px Georgia, "Times New Roman", Times, serif;
+    color: #888;
+    text-shadow: 1px 1px 1px #FFF;
+
+}
+.basic-grey h1 {
+    font: 25px Georgia, "Times New Roman", Times, serif;
+    padding: 0px 0px 10px 40px;
+    display: block;
+    border-bottom: 1px solid #DADADA;
+    margin: -10px -30px 30px -30px;
+    color: #888;
+}
+.basic-grey h1>span {
+    display: block;
+    font-size: 11px;
+}
+.basic-grey label {
+    display: block;
+    margin: 0px 0px 5px;
+}
+.basic-grey label>span {
+    float: left;
+    width: 80px;
+    text-align: right;
+    padding-right: 10px;
+    margin-top: 10px;
+    color: #888;
+}
+.basic-grey input[type="text"], .basic-grey input[type="email"], .basic-grey textarea,.basic-grey select{
+    border: 1px solid #DADADA;
+    color: #888;
+    height: 24px;
+    margin-bottom: 16px;
+    margin-right: 6px;
+    margin-top: 2px;
+    outline: 0 none;
+    padding: 3px 3px 3px 5px;
+    width: 70%;
+    font: normal 12px/12px Georgia, "Times New Roman", Times, serif;
+}
+.basic-grey select {
+    background: #FFF url('down-arrow.png') no-repeat right;
+    background: #FFF url('down-arrow.png') no-repeat right);
+    appearance:none;
+    -webkit-appearance:none; 
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+    width: 72%;
+    height: 30px;
+}
+.basic-grey textarea{
+    height:100px;
+}
+.basic-grey .button {
+    background: #E48F8F;
+    border: none;
+    padding: 10px 25px 10px 25px;
+    color: #FFF;
+}
+.basic-grey .button:hover {
+    background: #CF7A7A
+}
+.basic-grey .button1 {
+position:absolute;
+	right:50%;
+    background: #E48F8F;
+    border: none;
+    padding: 10px 25px 10px 25px;
+    color: #FFF;
+}
+.basic-grey .button1:hover {
+    background: #CF7A7A
+}
+body{overflow:hidden;background-image:url(bg-chat.jpg);background-repeat:no-repeat;}
+</style>
+</head>
+<body>
+<img src="CLOUDHEADER1.png" border="0" title="" alt="Welcome To Chat Over Cloud" style="position:absolute;left:50px;top:0px;">
+<br>
+<br>
+<form name="userDetails" id="userDetails" action="http://localhost:3000/submitTicket" method="post" class="basic-grey">
+	
+		<input id="clientId" type="text" name="clientId" style="visibility:hidden" />
+    <label>
+        <span>Your Name :</span>
+        <input id="name" type="text" name="name" placeholder="Your Full Name" />
+    </label>
+    	
+    <label>
+        <span>Your Email :</span>
+        <input id="email" type="email" name="email" placeholder="Valid Email Address" />
+    </label>
+    
+    <label>
+        <span>Message :</span>
+        <textarea id="message" name="message" placeholder="Your Message to Us"></textarea>
+    </label> 
+     <label>
+        <span>Category :</span>
+		<select id= "category" name="category">
+        </select>
+    </label>    
+     <label>
+        <span>&nbsp;</span> 
+        <button name ="sc" id="sc" class="button" type="submit" style="visibility:hidden" value="sc">Start Chat</button>
+        <button name ="chat" id="chat" type="button" style="visibility:hidden" class="button" value="Chat" onclick="startChat(); return false;">Chat</button> 
+        <button name ="close" id="close" type="button" class="button" value="close" onclick="closeWindow()">Close</button>
+        <button name ="ticket" id = "ticket" type="submit" style="visibility:visible" class="button1" value="Submit Ticket" >Submit Ticket</button> 
+
+    </label>    
+</form>
+       
+</body>
+
+</html>
