@@ -8,7 +8,7 @@ window.onload =function()
 {
 alert(clientId);
 var params = "clientId="+clientId;
-callCloudAjax("http://localhost:3000/categories",params,processRequest);
+callCloudAjax("http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/categories",params,processRequest);
 }
 
 function chatorTicket(status)
@@ -32,7 +32,7 @@ function startChat()
 {
 	alert("make ajax request to query DB");
 	var params="clientId="+clientId+"&message="+document.getElementById('message').value+"&category="+document.getElementById('category').value;
-	callCloudAjaxSync("http://localhost:3000/knowledgeBase",params,processKbResponse);
+	callCloudAjaxSync("http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/knowledgeBase",params,processKbResponse);
 	document.getElementById('sc').style.visibility="visible";
 	document.getElementById('chat').style.visibility="hidden";
 	
