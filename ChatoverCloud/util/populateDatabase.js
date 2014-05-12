@@ -9,7 +9,7 @@ var knowledge = require('./knowledgeDB.js');
 var offline = require('./offlineDB.js');
 
 //categories Data
-//
+
 //category.insertCategoriesDB({"clientId":"Honda","category":"SUV"});
 //category.insertCategoriesDB({"clientId":"Honda","category":"Hatchback"});
 //category.insertCategoriesDB({"clientId":"Honda","category":"Sedan"});
@@ -39,7 +39,7 @@ var offline = require('./offlineDB.js');
 //category.insertCategoriesDB({"clientId":"TuxAndBucks","category":"collar neck t-shirts"});
 //category.insertCategoriesDB({"clientId":"TuxAndBucks","category":"classic jeans"});
 //category.insertCategoriesDB({"clientId":"TuxAndBucks","category":"denim jeans"});
-//
+
 
 
 /*
@@ -56,7 +56,7 @@ var offline = require('./offlineDB.js');
 //
 //client.insertClient({"clientId":"Honda","password":"adminLogin","clientName":"Honda Motors","clientEmail":"pr@honda.com","domain":"www.honda.com","clientFlag":"offline" });
 //client.insertClient({"clientId":"Nissan","password":"adminLogin","clientName":"Nissan Motors","clientEmail":"customercare@nissan.com","domain":"www.nissan.com","clientFlag":"offline"});
-//client.insertClient({"clientId":"Levis","password":"adminLogin","clientName":"Levis","clientEmail":"","domain":"support@levis.com","clientFlag":"offline"});
+//client.insertClient({"clientId":"Levis","password":"adminLogin","clientName":"Levis","clientEmail":"support@levis.com","domain":"support@levis.com","clientFlag":"offline"});
 //client.insertClient({"clientId":"J.Crew","password":"adminLogin","clientName":"J.Crew","clientEmail":"admin@jcrew.com","domain":"www.jcrew.com","clientFlag":"offline"});
 //client.insertClient({"clientId":"TuxAndBucks","password":"adminLogin","clientName":"TuxAndBucks","clientEmail":"proprietor@TuxAndBucks.com","domain":"www.TuxAndBucks.com","clientFlag":"online"});
 
@@ -76,7 +76,7 @@ var offline = require('./offlineDB.js');
 //knowledge.insertKnowledgeDBMessage({"clientId":"Honda","keywords":"salvage","questionCategory":"salvage","question":"If my vehicle has a branded or Salvage title, is the warranty still valid?","answer":"Honda vehicles with titles that have been branded as salvaged, scrapped, or dismantled are no longer covered by the new car warranty, with the exception of some emissions warranties and safety recalls. For further information regarding the branding of vehicle titles, please contact your state's department of motor vehicles."});
 //knowledge.insertKnowledgeDBMessage({"clientId":"Honda","keywords":"PAX tires","questionCategory":"tires","question":"What are PAX Tires?","answer":"The PAX Tire System is the latest in run-flat tire technology that, in the event of a tire puncture, allows a driver to remain in control of the vehicle and continue driving for up to 125 miles at speeds up to 50 miles an hour on a deflated tire. For more information on PAX tires, go to http://www.michelinman.com/michelincom/automotive-tires/michelin-pax.page."});
 //knowledge.insertKnowledgeDBMessage({"clientId":"Honda","keywords":"warranty","questionCategory":"repair costs","question":"Where can I find Warranty information for my Honda vehicle?","answer":"Warranty information can be found in a number of different places. The most complete warranty information can be found in the Warranty booklet supplied with your vehicle. If the Warranty booklet is no longer with the vehicle, the same information can be found online through the Honda Owners Site. To access the information in Honda Owners Site, you must first register and enter your vehicle information. The warranty information can then be accessed for each vehicle. To register for a Honda Owners Site account, go to the Honda Owners Site website: owners.honda.com "});
-
+//
 //knowledge.insertKnowledgeDBMessage({"clientId":"Nissan","keywords":"key1","questionCategory":"category","question":"what?","answer":"This Way."});
 //knowledge.insertKnowledgeDBMessage({"clientId":"Nissan","keywords":"key2","questionCategory":"category","question":"hello?","answer":"This Way."});
 //knowledge.insertKnowledgeDBMessage({"clientId":"Nissan","keywords":"key3","questionCategory":"category","question":"what?","answer":"This Way."});
@@ -110,11 +110,11 @@ var offline = require('./offlineDB.js');
  *  "unreadFlag":value,
  *  "message":value}
  */
-/*
-offline.insertOfflineMessage({"clientId":"Honda","customerEmail":"customer1@gmail.com","unreadFlag":"0","message":"message1"});
-offline.insertOfflineMessage({"clientId":"Nissan","customerEmail":"customer2@gmail.com","unreadFlag":"0","message":"message2"});
-offline.insertOfflineMessage({"clientId":"Levis","customerEmail":"customer3@gmail.com","unreadFlag":"0","message":"message3"});
-offline.insertOfflineMessage({"clientId":"J.Crew","customerEmail":"customer4@gmail.com","unreadFlag":"0","message":"message4"});
-offline.insertOfflineMessage({"clientId":"TuxAndBucks","customerEmail":"customer5@gmail.com","unreadFlag":"0","message":"message5"});
 
-*/
+offline.insertOfflineMessage({"clientId":"Honda","customerEmail":"customer1@gmail.com","customerName":"Honda","unreadFlag":"0","message":"message1"});
+offline.insertOfflineMessage({"clientId":"Nissan","customerEmail":"customer2@gmail.com","customerName":"Nissan","unreadFlag":"0","message":"message2"});
+offline.insertOfflineMessage({"clientId":"Levis","customerEmail":"customer3@gmail.com","unreadFlag":"0","customerName":"TuxAndBucks","message":"message3"});
+offline.insertOfflineMessage({"clientId":"J.Crew","customerEmail":"customer4@gmail.com","unreadFlag":"0","customerName":"Levis","message":"message4"});
+offline.insertOfflineMessage({"clientId":"TuxAndBucks","customerEmail":"customer5@gmail.com","customerName":"J.Crew","unreadFlag":"0","message":"message5"});
+
+

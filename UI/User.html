@@ -2,13 +2,13 @@
 <head>
 <script>
 
-var clientId="gattu";
+var clientId="Honda";
 var supportStatus="offline";
 window.onload =function()
 {
 alert(clientId);
 var params = "clientId="+clientId;
-callCloudAjax("http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/categories",params,processRequest);
+callCloudAjax("http://localhost:3000/categories",params,processRequest);
 }
 
 function chatorTicket(status)
@@ -32,11 +32,11 @@ function startChat()
 {
 	alert("make ajax request to query DB");
 	var params="clientId="+clientId+"&message="+document.getElementById('message').value+"&category="+document.getElementById('category').value;
-	callCloudAjaxSync("http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/knowledgeBase",params,processKbResponse);
+	callCloudAjaxSync("http://localhost:3000/knowledgeBase",params,processKbResponse);
 	document.getElementById('sc').style.visibility="visible";
 	document.getElementById('chat').style.visibility="hidden";
 	
-	document.getElementById("userDetails").action="http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/initialRequest";
+	document.getElementById("userDetails").action="http://localhost:3000/initialRequest";
 }
 
 
@@ -278,7 +278,7 @@ body{overflow:hidden;background-image:url(bg-chat.jpg);background-repeat:no-repe
 <img src="CLOUDHEADER1.png" border="0" title="" alt="Welcome To Chat Over Cloud" style="position:absolute;left:50px;top:0px;">
 <br>
 <br>
-<form name="userDetails" id="userDetails" action="http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/submitTicket" method="post" class="basic-grey">
+<form name="userDetails" id="userDetails" action="http://localhost:3000/submitTicket" method="post" class="basic-grey">
 	
 		<input id="clientId" type="text" name="clientId" style="visibility:hidden" />
     <label>

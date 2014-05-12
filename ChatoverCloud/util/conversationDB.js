@@ -6,7 +6,7 @@ function insertConversationInitialReq(json,callback){
 	
 	/*
 	 * The above JSNON object must be of the form:
-	 * {"clientID":value,
+	 * {"clientId":value,
 	 * 	"customerName":value,
 	 * 	"customerEmail":value,
 	 * 	"category":value,
@@ -531,8 +531,6 @@ function getConversationsGreaterThanT1(callback,json){
 								console.log("DOCS length : " +docs.length);
 								if(!docs.length==0)
 									{
-										
-										
 										cat = cat.concat(docs[0].message);
 										cat = cat +";";
 										
@@ -545,7 +543,10 @@ function getConversationsGreaterThanT1(callback,json){
 										callback(err,cat);
 										}
 								else
+									{
+									console.log("cat: " +cat);
 									callback(err,cat);
+									}
 									
 								});
 							}
@@ -580,15 +581,16 @@ function initialPoll(callback,json){
 			{
 				db.collection("conversationDB", function (err, connection){
 					if(!err){
-					connection.find({"timeStamp":{$gt:parseInt(json.t1)},"clientId":json.clientId}, function(err,res){
+					connection.find({"timeStamp":{$gt:parseInt(json.t1)},"clientId":json.clientId, "customerName": { $exists: true}, "customerName": {$not:{$in:[0,"",null,"null"]}}}, function(err,res){
 						
 						if(!err){
-			
+							console.log("clientId : " + json.clientId + "  timestamp: " + json.t1);
 							var cat;
 							res.toArray(function(err,docs){
 								var d = new Date();
-								var timeStamp = d.getTime()
+								var timeStamp = d.getTime();
 								cat=timeStamp;
+								console.log("DOCS length : " +docs.length);
 								if(!docs.length==0)
 									{
 										
@@ -628,4 +630,65 @@ function initialPoll(callback,json){
 exports.initialPoll = initialPoll;
 
 
+function regularPoll(callback,json){
+	/*Pass the begining time and end time as parameter to this function*/
+	
+	if(json.t1){
+		MongoClient.connect('mongodb://127.0.0.1:27017/chatDB', function(err, db) {
+			if(err) throw err;
+			else
+			{
+				db.collection("conversationDB", function (err, connection){
+					if(!err){
+					connection.find({"timeStamp":{$gt:parseInt(json.t1)},"clientId":json.clientId,"conversationID":json.conversationID}, function(err,res){
+						
+						if(!err){
+							console.log("conversationID : " + json.conversationID + "  timestamp: " + json.t1);
+							var cat;
+							res.toArray(function(err,docs){
+								var d = new Date();
+								var timeStamp = d.getTime();
+								cat=timeStamp;
+								cat = cat +";";
+								console.log("DOCS length : " +docs.length);
+								if(!docs.length==0)
+									{
+										
+										
+										cat = cat.concat(docs[0].message);
+										cat = cat +";";
+										
+										for(var i=1; i<docs.length;i++)
+											{
+												cat = cat.concat(";");
+												
+												cat = cat.concat(docs[i].message);
+											}
+										callback(err,cat);
+										}
+								else
+									callback(err,cat);
+									
+								});
+							}
+							else{
+								console.log(err);
+							}
+						}
+					);
+				}
+				else{
+					console.log(err);
+				}
+					
+				});
+			}
+		});
+	}
+	else{
+		console.log("Insufficient Data.");
+	}
+}
+
+exports.regularPoll = regularPoll;
 

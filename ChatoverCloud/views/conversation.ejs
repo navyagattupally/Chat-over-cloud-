@@ -92,8 +92,8 @@ function addText(abcd) {
   ocontent = document.getElementById('content');
   ocontent.appendChild(op);
   olist.scrollTop = olist.scrollHeight;
-  params="message="+document.frmOne.tb1.value;
-  callCloudAjax("http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/customerrequest",params,processRequest);
+  params="message="+document.frmOne.tb1.value+"&conversationId="+conversationId+"&clientId="+clientId;
+  callCloudAjax("http://localhost:3000/customerrequest",params,processRequest);
   
 } 
 
@@ -130,7 +130,7 @@ function pollRequest()
 	setInterval(function makepollRequest()
 {
 	params="clientId="+clientId+"&conversationId="+conversationId+"&lastReq="+lastReq;
-	callCloudAjax("http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/custPollReq",params,processPollResp);
+	callCloudAjax("http://localhost:3000/custPollReq",params,processPollResp);
 },30000);
 }
 
@@ -215,9 +215,9 @@ function processPollResp()
 					{
 						var pollresp = results_array[1].split(";");
 						lastReq=pollresp[0];
-						for(var i=1;i<pollresp.length;i++)
+						for(var i=1;i<pollresp.length-1;i++)
 						{
-							addResponse(results_array[i]);
+							addResponse(pollresp[i]);
 						}
 					} 
 				}

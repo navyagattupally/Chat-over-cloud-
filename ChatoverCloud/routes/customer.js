@@ -10,7 +10,7 @@ exports.processrequest = function(req, res){
 	//res.send("respond with a resource");
 	console.log("Inside Customer Process Request");
 	//console.log(req.body);
-	if(!req.body.hasOwnProperty('message')) {
+	if(!req.body.hasOwnProperty('message') || !req.body.hasOwnProperty('conversationId') || !req.body.hasOwnProperty('clientId')) {
 		console.log("Does not have message");
 		res.statusCode = 400;
 		return res.send('1, Error 400: Post syntax incorrect.');
@@ -23,7 +23,21 @@ exports.processrequest = function(req, res){
 	//res.setDateHeader("Expires", 0); // prevents caching at the proxy
 	// server
 	//res.setHeader("Cache-Control", "no-store");
-	res.send("0, Message mil gaya Chill maar");
+	try
+	{
+		var json=[];
+		json.conversationID=req.body.conversationId;
+		json.message=req.body.message;
+		json.clientId=req.body.clientId;
+		conversation.insertConversationCustomer(json);
+		res.statusCode=200;
+		res.send("0");
+	}
+	catch(err)
+	{
+		res.statusCode=200;
+		res.send("1,Problem with insert");
+	}
 	//res.end();
 };
 

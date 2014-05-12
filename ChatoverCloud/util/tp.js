@@ -28,26 +28,27 @@ console.log(Time.at(seconds).strftime("%H:%M:%S"));
 		 
 */		 
 
-/*
-conversation.insertConversationInitialReq({"clientId":"NGattuPALLY","customerName":"tully","customerEmail":"tp1@gmail.com","category":"sf","message":"Hi"},function(err,res){
-	if(!err)
-		console.log(res);
-	else
-		console.log("error");
-});
 
-*/
+//conversation.insertConversationInitialReq({"clientId":"Honda","customerName":"ranjan13","customerEmail":"tp1@gmail.com","category":"sf","message":"Hi server3"},function(err,res){
+//	if(!err)
+//		console.log(res);
+//	else
+//		console.log("error");
+//});
 
-conversation.insertConversationClient({"customerName":"NGattuPALLY","conversationID":"gattu1399856311613","customerEmail":"tp1@gmail.com","category":"sf","message":"Hi"});
-var json =[];
-json.t1="1399854555555";
-json.conversationID= "gattu1399856311613";
-conversation.getConversationsGreaterThanT1(function(err,res){
-	if(!err){
-		res
-		console.log(res);
-	}
-},json);
+
+
+conversation.insertConversationCustomer({"conversationID":"Honda1399903502726","message":"Happy monday run","clientId":"Honda"});
+//var json =[];
+//json.t1="1399900251678";
+////json.conversationID= "Ranjan1399889100864";
+//json.clientId="Honda";
+//conversation.initialPoll(function(err,res){
+//	if(!err){
+//		res
+//		console.log(res);
+//	}
+//},json);
 
 //conversation.insertConversationClient(
-//		{"conversationID":"gattu1399858473792","message":"Hello i am ba, cant help today?"});
+//		{"conversationID":"Honda1399899122463","message":"Hello i am ba cant help tomorrow?"});

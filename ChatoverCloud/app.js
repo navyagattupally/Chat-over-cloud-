@@ -51,15 +51,17 @@ app.post('/custPollReq', customer.custPollReq);
 
 
 app.post('/clientPollReq',admin.clientPollReq);
+app.post('/initialClientPollReq',admin.initialClientPollReq);
 app.post('/insertkb',admin.insertkb);
 app.get('/knowledgeDB',admin.knowledgeDB);
 app.post('/inbox',admin.inbox);
 //app.get('/unreadMessages',admin.unreadMessages);
 //app.post('/adminChat',admin.adminChat);
-app.get('/chat',admin.chat);
+app.post('/clientResp',admin.clientResp);
 app.post('/adminvalidate', admin.adminvalidate);
 app.get('/admin',admin.dashboard);
 app.get('/logout',admin.logout);
+app.get('/chat',admin.chat);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -1,8 +1,8 @@
 
 var client = require('../util/clientDB');
    var knowledge = require('../util/knowledgeDB');
-   var offline=require('../util/conversationDB');
-   var conversation=require('../util/offlineDB');
+   var offline=require('../util/offlineDB');
+   var conversation=require('../util/conversationDB');
    
    
    
@@ -24,8 +24,8 @@ var client = require('../util/clientDB');
 				console.log('set flag to online');
 				var json = [];
 				json.clientId= req.body.name;
-				json.clientFlag= req.body.clientFlag;
-				client.setClientFlag({"clientId": json.clientId});
+				//json.clientFlag= req.body.clientFlag;
+				client.setClientFlag(req.body.name);
 				req.session.clientId = req.body.name;
 				console.log(req.session.clientId);
 			res.render('../views/admin.ejs');
@@ -99,28 +99,39 @@ var client = require('../util/clientDB');
    }
  }
     
-exports.adminChat=function(req,res)
+exports.clientResp=function(req,res)
 {
 	console.log("Inside admin chat");
 	
-	if(!req.body.hasOwnProperty('message')) {
-		console.log("Does not have message");
+	if(!req.body.hasOwnProperty('message') || !req.body.hasOwnProperty('conversationId')) {
+		console.log("Invalid Conversation");
 		res.statusCode = 400;
 		return res.send('1, Error 400: Post syntax incorrect.');
 	}
 	console.log("Message from admin : " + req.body.message);
 	//res.set('Content-Type', 'text/plain');
-	res.statusCode=200;
-	
-	res.send("0,*siddy will give you*");
+	try
+	{
+		var json=[];
+		json.conversationID=req.body.conversationId;
+		json.message=req.body.message;
+		conversation.insertConversationClient(json);
+		res.statusCode=200;
+		res.send("0");
 	}
+	catch(err)
+	{
+		res.statusCode=200;
+		res.send("1,Problem with insert");
+	}
+}
 
 exports.chat=function(req,res)
 {
 	if(req.session.clientId!="" && req.session.clientId!=null)
 		{
 		console.log(req.session.clientId);
-		res.render('chat');
+		res.render('chat',{clientId:req.session.clientId});
 		}
 		
 	else 
@@ -145,14 +156,14 @@ exports.clientPollReq = function(req, res){
 		var json=[];
 		json.conversationID=req.body.conversationId;
 		json.t1=req.body.lastReq;
-		json.clientId=req.body.clientid;
+		json.clientId=req.body.clientId;
 
 		console.log("clientId : " + req.body.clientId);
 		console.log("conversationID : " + req.body.conversationId);
 		console.log("timeStamp : " + req.body.lastReq);
 
 		//sayHello();
-		conversation.getConversationsGreaterThanT1(function(err,result){
+		conversation.regularPoll(function(err,result){
 			console.log("inside get conversation t1");
 			if(err)
 				console.log(err);
@@ -160,6 +171,41 @@ exports.clientPollReq = function(req, res){
 			{
 				res.statusCode=200;
 				console.log("Poll Response :" + result);
+				res.send("0^" + result);
+
+			}
+		},json);
+
+	}
+}
+
+exports.initialClientPollReq = function(req, res){
+
+	if(!req.body.hasOwnProperty('clientId') || !req.body.hasOwnProperty('lastReq')) 
+	{		
+		console.log("all the fields are required");
+
+		res.statusCode = 400;
+		return res.send('1, Error 400: Post syntax incorrect.');
+	}
+	else {
+
+		var json=[];
+		json.t1=req.body.lastReq;
+		json.clientId=req.body.clientId;
+
+		console.log("clientId : " + req.body.clientId);
+		console.log("timeStamp : " + req.body.lastReq);
+
+		//sayHello();
+		conversation.initialPoll(function(err,result){
+			console.log("inside initial Get Poll");
+			if(err)
+				console.log(err);
+			else
+			{
+				res.statusCode=200;
+				console.log("Initial Poll Response :" + result);
 				res.send("0^" + result);
 
 			}

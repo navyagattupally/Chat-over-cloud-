@@ -50,13 +50,13 @@ overflow-x: auto;
 	<body data-color="grey" class="flat">
 		<div id="wrapper">
 			<div id="header">
-				<h1><a href="/admin">Admin</a></h1>	
+				<h1><a href="http://localhost:3000/admin">Admin</a></h1>	
 				<a id="menu-trigger" href="#"><i class="fa fa-bars"></i></a>	
 			</div>
 		
 			<div id="user-nav">
 	            <ul class="btn-group">
-	                <li class="btn"><a title="" href="/logout"><i class="fa fa-share"></i> <span class="text">Logout</span></a></li>
+	                <li class="btn"><a title="" href="http://localhost:3000/logout"><i class="fa fa-share"></i> <span class="text">Logout</span></a></li>
 	            </ul>
 	        </div>
 	       
@@ -66,11 +66,11 @@ overflow-x: auto;
 					<input type="text" placeholder="Search here..."/><button type="submit" class="tip-right" title="Search"><i class="fa fa-search"></i></button>
 				</div>	
 				<ul>
-					<li class="active"><a href="/admin"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
+					<li class="active"><a href="http://localhost:3000/admin"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
 					</li>
-					<li><a href="/knowledgeDB"><i class="fa fa-th"></i> <span>KnowledgeBase</span></a></li>
-					<li><a href="/inbox"><i class="fa fa-file"></i> <span>Inbox</span></a></li>
-					<li><a href="/chat"><i class="fa fa-file"></i> <span>Support Chat</span></a></li>
+					<li><a href="http://localhost:3000/knowledgeDB"><i class="fa fa-th"></i> <span>KnowledgeBase</span></a></li>
+					<li><a href="http://localhost:3000/inbox"><i class="fa fa-file"></i> <span>Inbox</span></a></li>
+					<li><a href="http://localhost:3000/chat"><i class="fa fa-file"></i> <span>Support Chat</span></a></li>
 				</ul>	
 			</div>
 		
@@ -104,6 +104,184 @@ var req;
 var clientId;
 var conversationId;
 var lastReq;
+var custName;
+
+window.onload =function()
+{
+	clientId="<%=clientId%>";
+	alert("ClientID :" + clientId);
+	lastReq=getTimeStamp();
+	alert(lastReq);
+	pollRequest();
+}
+function initRequest() 
+{
+	if (window.XMLHttpRequest) 
+	{
+		return new XMLHttpRequest();
+	} 
+	else 
+	{
+		if (window.ActiveXObject) 
+		{
+			isIE = true;
+			return new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+
+}
+
+function callCloudAjax(url, params, process) 
+{
+	if(process!=null)
+	{
+		req = initRequest();
+		req.onreadystatechange = process;
+		req.open("POST",url,true);
+		req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		req.send(params);
+	}
+}
+
+function trim(x) {
+    return x.replace(/^\s+|\s+$/gm,'');
+}
+
+function addResponse(resp) {
+
+  olist = document.getElementById('list');
+  op = document.createElement('p');
+  op.innerHTML = custName + " : " + resp;
+  ocontent = document.getElementById('content1');
+  ocontent.appendChild(op);
+  olist.scrollTop = olist.scrollHeight;
+ 
+} 
+function getTimeStamp()
+{
+	var d=new Date();
+	var timestamp = d.getTime();
+	return timestamp;
+}
+function pollRequest()
+{
+	setInterval(function makepollRequest()
+{	
+	if(conversationId!=null)
+	{
+	params="clientId="+clientId+"&conversationId="+conversationId+"&lastReq="+lastReq;
+	callCloudAjax("http://localhost:3000/clientPollReq",params,processClientPollResp);
+	}
+	else
+	{
+		params="clientId="+clientId+"&lastReq="+lastReq;
+		callCloudAjax("http://localhost:3000/initialClientPollReq",params,processInitPollResp);	
+	}
+},30000);
+}
+function processClientPollResp() 
+{
+	if (req.readyState == 4) 
+	{
+		if (req.status == 200) 
+		{
+			results = req.responseText;
+			if (results != null) 
+			{
+				var results_array = results.split("^");
+				var value = trim(results);
+				if ((value != "") && (value.length != 0)) 
+				{
+					if (results_array[0] == "1") 
+					{
+						alert(results_array[1]);
+					}
+					else
+					{
+						var pollresp = results_array[1].split(";");
+						lastReq=pollresp[0];
+						for(var i=1;i<pollresp.length-1;i++)
+						{
+							addResponse(pollresp[i]);
+						}
+					} 
+				}
+			}
+		} 
+		else 
+		{	
+       		alert("Problems communicating with Cloud server");
+       		return false;
+		}
+	}
+} 
+function processInitPollResp() 
+{
+	if (req.readyState == 4) 
+	{
+		if (req.status == 200) 
+		{
+			results = req.responseText;
+			if (results != null) 
+			{
+				var results_array = results.split("^");
+				var value = trim(results);
+				if ((value != "") && (value.length != 0)) 
+				{
+					if (results_array[0] == "1") 
+					{
+						alert(results_array[1]);
+					}
+					else
+					{
+						var pollresp = results_array[1].split(";");
+						lastReq=pollresp[0];
+						custName=pollresp[1];
+						conversationId=pollresp[2];
+						if (pollresp[3]!="" && pollresp[3]!=null)
+							addResponse(pollresp[3]);
+					} 
+				}
+			}
+		} 
+		else 
+		{	
+       		alert("Problems communicating with Cloud server");
+       		return false;
+		}
+	}
+} 
+function processRequest() 
+{
+	if (req.readyState == 4) 
+	{
+		if (req.status == 200) 
+		{
+			results = req.responseText;
+			if (results != null) 
+			{
+				var results_array = results.split(",");
+				var value = trim(results);
+				if ((value != "") && (value.length != 0)) 
+				{
+					if (results_array[0] == "1") 
+					{
+						alert(results_array[1]);
+					}
+					else
+					{
+						alert("response recieved and logged");
+					} 
+				}
+			}
+		} 
+		else 
+		{	
+       		alert("Problems communicating with Cloud server");
+       		return false;
+		}
+	}
+} 
 function addText(abcd) {
 
   olist = document.getElementById('list');
@@ -112,8 +290,8 @@ function addText(abcd) {
   ocontent = document.getElementById('content1');
   ocontent.appendChild(op);
   olist.scrollTop = olist.scrollHeight;
-  params="message="+document.frmOne.tb1.value;
-  callCloudAjax("ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/customerrequest",params,processRequest);
+  params="message="+document.frmOne.tb1.value+"&conversationId="+conversationId;
+  callCloudAjax("http://localhost:3000/clientResp",params,processRequest);
   
 }
 </script>
@@ -126,19 +304,15 @@ function addText(abcd) {
   <p> hello user </p>
   </div>
 </div>
-<div><input id = "tb1" type="text"  value="" class="myclass" name = "textBox1"/></div><div><input type="button" class="button" value="Send" onclick="addText(this)" /></div>
+<div><input id = "tb1" type="text"  value="" class="myclass" name = "textBox1"/></div>
+<div><input type="button" class="button" value="Send" onclick="addText(this)" /></div>
 </form>
-									</div>
+</div>
 									</div>
 									<!-- right pannel start-->
 									<div class="chat-users panel-right">
 									<div class="panel-title"><h5>Online Users</h5></div
 									<div class="panel-content nopadding">
-										<div id="list">
-  <div id="content1">
-  <p> hello user </p>
-  </div>
-</div>
 <!-- right pannel end -->
 									</div>
 									<!-- CHAT WINDOW ENDS HEREE-->
@@ -148,7 +322,7 @@ function addText(abcd) {
 		</div>
 		<div class="row">
 			<div id="footer" class="col-xs-12">
-				2012 - 2013 &copy; 
+				2012 - 2013 &copy;Admin. Brought to you by <a href="https://wrapbootstrap.com/user/diablo9983">diablo9983</a>
 			</div>
 		</div>
 	<div class="white-backdrop"></div>
