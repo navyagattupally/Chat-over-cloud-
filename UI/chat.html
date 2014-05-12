@@ -1,0 +1,181 @@
+<html>
+<head>
+
+<style type="text/css">
+.basic-grey .button {
+    background: #E48F8F;
+    border: none;
+    padding: 10px 25px 10px 25px;
+    color: #FFF;
+	position:absolute;
+	right:0.5%;
+}
+.basic-grey .button:hover {
+    background: #CF7A7A
+}
+
+.myclass{
+		width:100%;
+        height: 60px;
+        position: relative;
+        border: 1px solid #cdcdcd;
+        border-color: rgba(0,0,0,.14);
+        background-color: AliceBlue ;   ;
+        font-size:12px;
+		color:grey;
+    }
+
+.systemuser {
+	padding: 6px 35px 6px 10px;
+	margin-bottom: 6px;
+	margin-top: 6px;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	background-color: #d9edf7;
+	border: 1px solid #bce8f1;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	color: #3a87ad;
+	font-size: 14px;
+}
+
+div#list {
+background-color: #00000;
+color: #000;
+overflow-x: auto;
+  width: inherit;
+  height: 15em;
+  padding: 10px;
+  text-align: right bottom;
+  font-size: 14px;
+}
+
+div.ex
+{
+width:180px;
+padding:1px;
+margin:0px;
+}
+    
+</style>
+
+<title>chat app </title>
+
+
+<script type="text/javascript">
+var req;
+function addText(abcd) {
+
+  olist = document.getElementById('list');
+  op = document.createElement('p');
+  op.innerHTML = "You : " + document.frmOne.tb1.value;
+  ocontent = document.getElementById('content');
+  ocontent.appendChild(op);
+  olist.scrollTop = olist.scrollHeight;
+  params="message="+document.frmOne.tb1.value;
+  callCloudAjax("http://ec2-54-193-76-231.us-west-1.compute.amazonaws.com:3000/customerrequest",params,processRequest);
+  
+} 
+
+function addResponse(resp) {
+
+  olist = document.getElementById('list');
+  op = document.createElement('p');
+  op.innerHTML = "Server : " + resp;
+  ocontent = document.getElementById('content');
+  ocontent.appendChild(op);
+  olist.scrollTop = olist.scrollHeight;
+ 
+} 
+
+
+function initRequest() 
+{
+	if (window.XMLHttpRequest) 
+	{
+		return new XMLHttpRequest();
+	} 
+	else 
+	{
+		if (window.ActiveXObject) 
+		{
+			isIE = true;
+			return new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+
+}
+
+function callCloudAjax(url, params, process) 
+{
+	if(process!=null)
+	{
+		
+		req = initRequest();
+		req.onreadystatechange = process;
+		req.open("POST",url,true);
+		req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		req.send(params);
+	}
+}
+
+function processRequest() 
+{
+	if (req.readyState == 4) 
+	{
+		if (req.status == 200) 
+		{
+			results = req.responseText;
+			if (results != null) 
+			{
+				var results_array = results.split(",");
+				var value = trim(results);
+				if ((value != "") && (value.length != 0)) 
+				{
+					if (results_array[0] == "1") 
+					{
+						alert(results_array[1]);
+					}
+					else
+					{
+						addResponse(results_array[1]);
+					} 
+				}
+			}
+		} 
+		else 
+		{	
+       		alert("Problems communicating with Cloud server");
+       		return false;
+		}
+	}
+} 
+
+function trim(x) {
+    return x.replace(/^\s+|\s+$/gm,'');
+}
+</script>
+
+</head> 
+
+<body>
+<br><br><br>
+<h2> </h2>
+<img src="header.png" border="0" title="" alt="Welcome To Chat Over Cloud" style="position:absolute;left:50px;top:6px;">
+<img src="line4.png" border="0" alt="Welcome To Chat Over Cloud" style="position:absolute;top:100px;left:0px;">
+
+<br>
+<br>
+<form name = "frmOne" class="basic-grey">
+
+<div id="list">
+  <div id="content">
+
+  <p class="systemuser">Please wait and one of our operators will be with you shortly.</p>
+  </div>
+</div>
+<div><input id = "tb1" type="text"  value="" class="myclass" name = "textBox1"/></div><div><input type="button" class="button" value="Send" onclick="addText(this)" /></div>
+</form>
+</body>
+
+</html>
