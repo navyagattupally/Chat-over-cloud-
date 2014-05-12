@@ -45,7 +45,7 @@ app.post('/initialRequest', customer.initialRequest);
 app.post('/submitTicket', customer.submitTicket);
 app.post('/knowledgeBase', customer.knowledgeBase);
 app.post('/custPollReq', customer.custPollReq);
-
+app.get('/support', customer.support);
 
 
 
@@ -63,7 +63,7 @@ app.get('/admin',admin.dashboard);
 app.get('/logout',admin.logout);
 app.get('/chat',admin.chat);
 
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
-
